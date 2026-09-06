@@ -1,0 +1,9 @@
+{
+  "name": "sumas-evote",
+  "version": "1.0.0",
+  "private": true,
+  "description": "SUMAS E-VOTE — faculty election voting system with Netlify Functions backend",
+  "dependencies": {
+    "@supabase/supabase-js": "^2.45.4"
+  }
+}
