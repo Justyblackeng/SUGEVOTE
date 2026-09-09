@@ -1,0 +1,9 @@
+# SUMAS E-VOTE — Netlify now serves only the static front end.
+# All backend logic (get-ballot, get-results, get-turnout,
+# request-otp, submit-vote, verify-otp) lives in Supabase Edge
+# Functions instead — see supabase/functions/.
+
+[build]
+  publish = "."
+
+# No [functions] block: this site has no Netlify Functions anymore.

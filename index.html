@@ -1,0 +1,1131 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SUMAS E-VOTE</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600;9..144,700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --ink:#1B1E7A;
+    --paper:#FFFFFF;
+    --gold:#C79A2E;
+    --green:#0F7A47;
+    --brown:#6B4A1E;
+    --line:#DED6C4;
+    --ink-soft:#4A4F8C;
+  }
+  *{box-sizing:border-box;}
+  body{
+    margin:0;
+    background:var(--paper);
+    background-image:
+      radial-gradient(circle at 1px 1px, rgba(107,74,30,0.06) 1px, transparent 0);
+    background-size: 22px 22px;
+    color:var(--ink);
+    font-family:'Inter',sans-serif;
+    min-height:100vh;
+  }
+  .serif{font-family:'Fraunces',serif;}
+  .wrap{
+    max-width:520px;
+    margin:0 auto;
+    padding:28px 20px 80px;
+  }
+  .letterhead{
+    display:flex;
+    align-items:center;
+    gap:14px;
+    padding-bottom:18px;
+    border-bottom:1.5px solid var(--brown);
+    margin-bottom:26px;
+  }
+  .seal{
+    width:72px;height:72px;flex-shrink:0;
+    display:flex;align-items:center;justify-content:center;
+    position:relative;
+    border-radius:50%;
+    background:#FFFFFF;
+    box-shadow:0 0 0 1px var(--line), 0 2px 6px rgba(22,33,62,0.12);
+  }
+  .seal img{
+    width:88%;height:88%;object-fit:contain;
+    border-radius:50%;
+  }
+  .letterhead h1{font-size:14px;letter-spacing:0.02em;margin:0 0 2px;color:var(--ink-soft);font-weight:500;}
+  .letterhead h2{font-size:19px;margin:0;font-weight:600;}
+  .letterhead .sub{font-size:11.5px;color:var(--ink-soft);margin:2px 0 0;font-weight:400;line-height:1.3;}
+
+  .card{
+    background:#fff;
+    border:1px solid var(--line);
+    border-radius:2px;
+    padding:26px 22px;
+    position:relative;
+  }
+  .card::before{
+    content:'';
+    position:absolute;
+    left:0;top:14px;bottom:14px;width:3px;
+    background:var(--gold);
+  }
+  .field-label{font-size:13px;color:var(--ink-soft);margin-bottom:6px;display:block;}
+  input[type=text]{
+    width:100%;
+    padding:12px 14px;
+    border:1px solid var(--line);
+    border-radius:2px;
+    font-family:'Inter',sans-serif;
+    font-size:15px;
+    background:var(--paper);
+    color:var(--ink);
+  }
+  input[type=text]:focus{outline:2px solid var(--ink);outline-offset:1px;}
+  select{
+    width:100%;
+    padding:12px 14px;
+    border:1px solid var(--line);
+    border-radius:2px;
+    font-family:'Inter',sans-serif;
+    font-size:15px;
+    background:var(--paper);
+    color:var(--ink);
+    appearance:none;
+    background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='9' viewBox='0 0 14 9'%3E%3Cpath d='M1 1l6 6 6-6' stroke='%234A4F8C' stroke-width='1.6' fill='none' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+    background-repeat:no-repeat;
+    background-position:right 14px center;
+  }
+  select:focus{outline:2px solid var(--ink);outline-offset:1px;}
+  select:invalid{color:var(--ink-soft);}
+
+  .btn{
+    display:inline-flex;align-items:center;justify-content:center;
+    padding:13px 22px;
+    background:var(--ink);
+    color:var(--paper);
+    border:none;
+    border-radius:2px;
+    font-family:'Inter',sans-serif;
+    font-weight:600;
+    font-size:15px;
+    cursor:pointer;
+    width:100%;
+    transition:background .15s ease;
+  }
+  .btn:hover{background:#233158;}
+  .btn:disabled{background:#B9BDCB;cursor:not-allowed;}
+  .btn-ghost{
+    background:transparent;
+    color:var(--ink);
+    border:1px solid var(--ink);
+  }
+  .btn-ghost:hover{background:rgba(22,33,62,0.05);}
+
+  .position-title{
+    font-family:'Fraunces',serif;
+    font-size:20px;
+    font-weight:600;
+    margin:0 0 3px;
+  }
+  .position-sub{
+    font-size:12.5px;
+    color:var(--ink-soft);
+    margin:0 0 14px;
+  }
+  .ballot-line{
+    display:flex;
+    align-items:center;
+    gap:14px;
+    padding:14px 4px;
+    border-bottom:1px solid var(--line);
+    cursor:pointer;
+  }
+  .ballot-line:last-child{border-bottom:none;}
+  .oval{
+    width:26px;height:18px;
+    border:2px solid var(--ink);
+    border-radius:50%;
+    flex-shrink:0;
+    position:relative;
+  }
+  .oval.checked{background:var(--ink);}
+  .oval.checked::after{
+    content:'';
+    position:absolute;inset:0;
+    display:flex;
+  }
+  .cand-name{font-family:'Fraunces',serif;font-weight:600;font-size:16px;}
+  .cand-tag{font-size:12px;color:var(--brown);margin-top:1px;}
+
+  .progress-track{
+    display:flex;gap:5px;margin-bottom:22px;
+  }
+  .progress-seg{flex:1;height:3px;background:var(--line);border-radius:2px;}
+  .progress-seg.done{background:var(--gold);}
+  .progress-seg.active{background:var(--ink);}
+
+  .stamp{
+    display:inline-flex;align-items:center;gap:8px;
+    border:1.5px solid var(--green);
+    color:var(--green);
+    padding:6px 14px;
+    border-radius:2px;
+    font-size:12.5px;
+    font-weight:600;
+    letter-spacing:0.03em;
+    transform:rotate(-2deg);
+  }
+
+  .stat-row{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:4px;}
+  .stat-num{font-family:'Fraunces',serif;font-weight:600;}
+  .bar-track{background:var(--paper);border:1px solid var(--line);height:10px;border-radius:6px;overflow:hidden;}
+  .bar-fill{height:100%;background:var(--ink);}
+  .bar-fill.winner{background:var(--gold);}
+
+  .link-small{
+    font-size:12.5px;color:var(--ink-soft);text-decoration:underline;cursor:pointer;background:none;border:none;padding:0;
+  }
+  .footer-note{
+    text-align:center;font-size:11.5px;color:var(--ink-soft);margin-top:30px;line-height:1.6;
+  }
+  .hidden{display:none !important;}
+
+  .splash{
+    position:fixed;inset:0;
+    background:var(--paper);
+    display:flex;align-items:center;justify-content:center;
+    z-index:999;
+    animation: splashFade 3s ease forwards;
+  }
+  @keyframes splashFade{
+    0%{opacity:0;}
+    14%{opacity:1;}
+    78%{opacity:1;}
+    100%{opacity:0;}
+  }
+  .splash-inner{text-align:center;padding:24px;max-width:340px;}
+  .splash-logo{
+    width:84px;height:84px;flex-shrink:0;border-radius:50%;
+    background:#FFFFFF;
+    box-shadow:0 0 0 1px var(--line), 0 4px 14px rgba(22,33,62,0.15);
+    margin:0 auto 20px;
+    display:flex;align-items:center;justify-content:center;
+    animation:splashPop .6s ease;
+  }
+  .splash-logo img{width:88%;height:88%;object-fit:contain;border-radius:50%;}
+  @keyframes splashPop{from{transform:scale(.85);opacity:0;}to{transform:scale(1);opacity:1;}}
+  .splash-title{font-family:'Fraunces',serif;font-size:25px;font-weight:600;color:var(--ink);margin:0 0 8px;line-height:1.3;}
+  .splash-sub{font-size:13.5px;color:var(--gold);font-weight:600;margin:0;letter-spacing:0.01em;line-height:1.5;}
+  .fade-in{animation:fadeIn .25s ease;}
+  @keyframes fadeIn{from{opacity:0;transform:translateY(4px);}to{opacity:1;transform:none;}}
+
+  .error-box{
+    border:1px solid #B3453D;
+    background:#FBEEEC;
+    color:#8C332C;
+    padding:10px 12px;
+    border-radius:2px;
+    font-size:13px;
+    margin-bottom:16px;
+  }
+  .ok-box{
+    border:1px solid var(--green);
+    background:#E9F5EE;
+    color:var(--green);
+    padding:10px 12px;
+    border-radius:2px;
+    font-size:13px;
+    margin-bottom:16px;
+  }
+
+  /* ── Admin dashboard (#admin) ── */
+  .card h3{font-family:'Fraunces',serif;font-size:17px;margin:0 0 14px;font-weight:600;}
+  input[type=password],input[type=datetime-local]{
+    width:100%;
+    padding:12px 14px;
+    border:1px solid var(--line);
+    border-radius:2px;
+    font-family:'Inter',sans-serif;
+    font-size:15px;
+    background:var(--paper);
+    color:var(--ink);
+  }
+  input[type=password]:focus,input[type=datetime-local]:focus{outline:2px solid var(--ink);outline-offset:1px;}
+  .btn-full{width:100%;}
+  .muted{color:var(--ink-soft);font-size:12.5px;}
+  .pill{
+    display:inline-flex;align-items:center;gap:6px;font-size:12px;font-weight:600;
+    padding:5px 12px;border-radius:20px;letter-spacing:0.02em;
+  }
+  .pill.open{background:#E9F5EE;color:var(--green);}
+  .pill.closed{background:#FBEEEC;color:#8C332C;}
+  .pill.scheduled{background:#FBF3E0;color:var(--gold);}
+  .toggle-row{display:flex;justify-content:space-between;align-items:center;padding:4px 0;}
+  .switch{position:relative;width:44px;height:24px;flex-shrink:0;}
+  .switch input{opacity:0;width:0;height:0;}
+  .slider{position:absolute;cursor:pointer;inset:0;background:#CBD0DE;border-radius:24px;transition:.15s;}
+  .slider::before{content:'';position:absolute;height:18px;width:18px;left:3px;top:3px;background:#fff;border-radius:50%;transition:.15s;}
+  .switch input:checked + .slider{background:var(--green);}
+  .switch input:checked + .slider::before{transform:translateX(20px);}
+  .ballot-pos{border:1px solid var(--line);border-radius:2px;padding:14px 16px;margin-bottom:12px;}
+  .ballot-pos-head{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:10px;}
+  .ballot-pos-head .title{font-family:'Fraunces',serif;font-size:15.5px;font-weight:600;}
+  .ballot-cand-row{
+    display:flex;justify-content:space-between;align-items:center;
+    padding:8px 0;border-bottom:1px solid var(--line);gap:10px;
+  }
+  .ballot-cand-row:last-of-type{border-bottom:none;}
+  .ballot-cand-name{font-size:13.5px;}
+  .ballot-cand-tag{font-size:11.5px;color:var(--brown);}
+  .icon-btn{
+    background:none;border:none;cursor:pointer;color:var(--ink-soft);
+    font-size:12px;padding:4px 6px;text-decoration:underline;
+  }
+  .icon-btn.danger{color:#B3453D;}
+  .add-cand-row{display:flex;gap:8px;margin-top:8px;}
+  .add-cand-row input{flex:1;}
+</style>
+</head>
+<body>
+
+<div class="splash" id="splash">
+  <div class="splash-inner">
+    <div class="splash-logo"><img src="/sumas-evote-logo.png" alt="SUMAS E-VOTE"></div>
+    <p class="splash-title">Welcome to SUMAS E-VOTE</p>
+    <p class="splash-sub">Let's make the experience transparent and democratic.</p>
+  </div>
+</div>
+
+<div class="wrap" id="voter-app">
+
+  <div class="letterhead">
+    <div class="seal"><img src="/sumas-evote-logo.png" alt="SUMAS crest"></div>
+    <div>
+      <h2>SUMAS E-VOTE</h2>
+      <p class="sub">State University of Medical and Applied Sciences, Igbo-Eno, Enugu State</p>
+    </div>
+  </div>
+
+  <!-- LOGIN -->
+  <div id="screen-login" class="card fade-in">
+    <p class="field-label" style="font-size:12px;color:var(--gold);font-weight:600;margin-bottom:14px;">2026/2027 FACULTY ELECTIONS · POLLS OPEN</p>
+    <h2 class="serif" style="font-size:22px;margin:0 0 6px;">Verify to vote</h2>
+    <p style="font-size:13.5px;color:var(--ink-soft);margin:0 0 20px;line-height:1.5;">Enter your details to confirm you're on the voter roll. We'll send a one-time code to your email before you can vote. Each student may vote once.</p>
+
+    <div id="login-error"></div>
+
+    <label class="field-label" for="matric">Matriculation number</label>
+    <input type="text" id="matric" placeholder="e.g. SUMAS/22/SC/0142" style="margin-bottom:14px;">
+
+    <label class="field-label" for="fullname">Full name</label>
+    <input type="text" id="fullname" placeholder="As it appears on your student ID" style="margin-bottom:14px;">
+
+    <label class="field-label" for="email">Email address</label>
+    <input type="text" id="email" placeholder="you@example.com" style="margin-bottom:14px;">
+
+    <label class="field-label" for="faculty">Faculty</label>
+    <select id="faculty" style="margin-bottom:20px;">
+      <option value="" disabled selected>Select your faculty</option>
+      <option value="Clinical Medicine">Clinical Medicine</option>
+      <option value="Basic Medical Sciences">Basic Medical Sciences</option>
+      <option value="Allied Health Sciences">Allied Health Sciences</option>
+      <option value="Pharmacy">Pharmacy</option>
+      <option value="Natural and Applied Sciences">Natural and Applied Sciences</option>
+      <option value="Engineering and the Built Environment">Engineering and the Built Environment</option>
+      <option value="Dentistry">Dentistry</option>
+    </select>
+
+    <button class="btn" id="btn-verify" onclick="requestOtp()">Send verification code</button>
+    <button class="link-small" style="margin-top:14px;display:block;text-align:center;width:100%;" onclick="showScreen('turnout')">View live results →</button>
+  </div>
+
+  <!-- OTP -->
+  <div id="screen-otp" class="card fade-in hidden">
+    <h2 class="serif" style="font-size:22px;margin:0 0 6px;">Enter verification code</h2>
+    <p style="font-size:13.5px;color:var(--ink-soft);margin:0 0 20px;line-height:1.5;" id="otp-sub">A 6-digit code has been sent to your email. It expires in 10 minutes.</p>
+
+    <div id="otp-error"></div>
+
+    <label class="field-label" for="otp-code">Verification code</label>
+    <input type="text" id="otp-code" inputmode="numeric" maxlength="6" placeholder="123456" style="margin-bottom:16px;letter-spacing:4px;font-size:18px;text-align:center;">
+
+    <button class="btn" id="btn-otp-verify" onclick="verifyOtp()">Verify and continue</button>
+    <button class="link-small" style="margin-top:14px;display:block;text-align:center;width:100%;" onclick="requestOtp(true)">Didn't get a code? Resend</button>
+  </div>
+
+  <!-- BALLOT -->
+  <div id="screen-ballot" class="card fade-in hidden">
+    <div class="progress-track" id="progress-track"></div>
+    <div id="ballot-position"></div>
+    <div style="display:flex;gap:10px;margin-top:22px;">
+      <button class="btn btn-ghost" id="btn-back" style="width:auto;padding:13px 18px;" onclick="prevPosition()">Back</button>
+      <button class="btn" id="btn-next" onclick="nextPosition()">Continue</button>
+    </div>
+  </div>
+
+
+  <!-- REVIEW -->
+  <div id="screen-review" class="card fade-in hidden">
+    <h2 class="serif" style="font-size:20px;margin:0 0 4px;">Review your ballot</h2>
+    <p style="font-size:13px;color:var(--ink-soft);margin:0 0 18px;">Confirm your selections before submitting. This cannot be changed after submission.</p>
+    <div id="review-list"></div>
+    <div style="display:flex;gap:10px;margin-top:22px;">
+      <button class="btn btn-ghost" style="width:auto;padding:13px 18px;" onclick="showScreen('ballot')">Edit</button>
+      <button class="btn" onclick="submitVote()">Cast my vote</button>
+    </div>
+  </div>
+
+  <!-- CONFIRMATION -->
+  <div id="screen-done" class="card fade-in hidden" style="text-align:center;">
+    <div class="stamp" style="margin-bottom:16px;">✓ VOTE RECORDED</div>
+    <h2 class="serif" style="font-size:22px;margin:0 0 8px;">Thank you for voting</h2>
+    <p style="font-size:13.5px;color:var(--ink-soft);margin:0 0 22px;line-height:1.5;">Your ballot has been encrypted and recorded anonymously. It's now part of the official count.</p>
+    <button class="link-small" onclick="showScreen('turnout')">View live turnout →</button>
+  </div>
+
+  <!-- TURNOUT / RESULTS -->
+  <div id="screen-turnout" class="card fade-in hidden">
+    <h2 class="serif" style="font-size:20px;margin:0 0 4px;">Live turnout</h2>
+    <p style="font-size:13px;color:var(--ink-soft);margin:0 0 18px;" id="turnout-sub">Updates as students vote. Individual votes stay anonymous.</p>
+    <div class="stat-row">
+      <span style="font-size:13.5px;">Students voted</span>
+      <span class="stat-num" style="font-size:15px;" id="turnout-count">0</span>
+    </div>
+    <div class="bar-track" style="margin-bottom:22px;"><div class="bar-fill" id="turnout-bar" style="width:0%;"></div></div>
+
+    <div id="results-block" class="hidden">
+      <h2 class="serif" style="font-size:18px;margin:22px 0 14px;border-top:1px solid var(--line);padding-top:20px;">Results by position</h2>
+      <div id="results-list"></div>
+    </div>
+
+    <button class="link-small" style="margin-top:18px;" onclick="showScreen('login'); resetForm();">← Back to login</button>
+  </div>
+
+  <p class="footer-note">State University of Medical and Applied Sciences, Igbo-Eno, Enugu State &middot; SUMAS E-VOTE</p>
+</div>
+
+<!-- ══════════════ ADMIN DASHBOARD (reached via /#admin) ══════════════ -->
+<div class="wrap hidden" id="admin-app" style="max-width:640px;">
+
+  <div class="letterhead">
+    <div class="seal"><img src="/sumas-evote-logo.png" alt="SUMAS crest"></div>
+    <div>
+      <h2>SUMAS E-VOTE — Admin</h2>
+      <p class="sub">Electoral committee dashboard · not visible to voters</p>
+    </div>
+  </div>
+
+  <!-- UNLOCK -->
+  <div id="screen-unlock" class="card">
+    <h3>Enter admin key</h3>
+    <div id="unlock-error"></div>
+    <label class="field-label" for="admin-key">Admin key</label>
+    <input type="password" id="admin-key" placeholder="Set as ADMIN_KEY in Netlify" style="margin-bottom:14px;">
+    <button class="btn btn-full" onclick="unlock()">Unlock dashboard</button>
+    <p class="muted" style="margin-top:12px;">This key is set once by whoever deployed the site, as the <code>ADMIN_KEY</code> environment variable in Netlify. It's not the same as any student credential.</p>
+  </div>
+
+  <!-- DASHBOARD -->
+  <div id="screen-dashboard" class="hidden">
+
+    <div class="card">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px;">
+        <h3 style="margin:0;">Poll status</h3>
+        <span id="poll-pill" class="pill open">—</span>
+      </div>
+      <div id="dash-error"></div>
+      <div id="dash-ok"></div>
+
+      <div class="stat-row">
+        <span style="font-size:13.5px;">Students voted</span>
+        <span class="stat-num" id="admin-turnout-count">—</span>
+      </div>
+      <div class="bar-track" style="margin-bottom:8px;"><div class="bar-fill" id="admin-turnout-bar" style="width:0%;"></div></div>
+      <p class="muted" id="admin-turnout-sub" style="margin:0 0 18px;">—</p>
+
+      <label class="field-label" for="poll-open">Poll opens (optional)</label>
+      <input type="datetime-local" id="poll-open" style="margin-bottom:14px;">
+
+      <label class="field-label" for="poll-close">Poll closes (optional)</label>
+      <input type="datetime-local" id="poll-close" style="margin-bottom:14px;">
+
+      <div class="toggle-row" style="margin-bottom:16px;">
+        <div>
+          <div style="font-size:14px;font-weight:600;">Results public</div>
+          <div class="muted">Results also auto-reveal once the poll close time passes, regardless of this.</div>
+        </div>
+        <label class="switch"><input type="checkbox" id="results-public-toggle"><span class="slider"></span></label>
+      </div>
+
+      <button class="btn btn-full" id="btn-save" onclick="saveSettings()">Save changes</button>
+    </div>
+
+    <div class="card">
+      <h3>Ballot — positions &amp; candidates</h3>
+      <p class="muted" style="margin:-8px 0 16px;">Set these up before polls open. A position or candidate that already has recorded votes can't be removed — the database blocks it automatically, so this stays safe to use once voting is underway too.</p>
+      <div id="ballot-error"></div>
+      <div id="ballot-ok"></div>
+      <div id="ballot-list"></div>
+
+      <div style="border-top:1px solid var(--line);margin-top:18px;padding-top:18px;">
+        <div style="font-size:13.5px;font-weight:600;margin-bottom:10px;">Add a position</div>
+        <label class="field-label" for="new-pos-title">Title</label>
+        <input type="text" id="new-pos-title" placeholder="e.g. Director of Sports" style="margin-bottom:10px;">
+        <label class="field-label" for="new-pos-order">Sort order</label>
+        <input type="text" id="new-pos-order" placeholder="e.g. 12" style="margin-bottom:12px;">
+        <button class="btn btn-ghost" onclick="addPosition()">Add position</button>
+      </div>
+    </div>
+
+    <div class="card">
+      <h3>Vote counts</h3>
+      <p class="muted" style="margin:-8px 0 16px;">Visible here regardless of the results-public setting — this is the admin view, not what voters see.</p>
+      <div id="admin-results"></div>
+    </div>
+
+    <button class="btn btn-ghost" onclick="refreshAll()">Refresh</button>
+  </div>
+
+  <p class="footer-note">State University of Medical and Applied Sciences, Igbo-Eno, Enugu State &middot; SUMAS E-VOTE — Admin</p>
+</div>
+
+<script>
+// Replace YOUR_PROJECT_REF with your Supabase project ref (visible in
+// your Supabase project's Settings > API page, and in its URL).
+const API = "https://YOUR_PROJECT_REF.supabase.co/functions/v1";
+
+let voter = null;
+let currentPos = 0;
+let selections = {};
+let POSITIONS = [];
+
+async function loadBallot(){
+  try {
+    const res = await fetch(`${API}/get-ballot`);
+    if(!res.ok) throw new Error("ballot_load_failed");
+    POSITIONS = await res.json();
+  } catch(e){
+    document.getElementById("screen-login").innerHTML =
+      '<div class="error-box">Could not load the ballot right now. Please refresh, or contact the electoral committee if this continues.</div>';
+  }
+}
+
+function showScreen(name){
+  ["login","otp","ballot","review","done","turnout"].forEach(s=>{
+    document.getElementById("screen-"+s).classList.toggle("hidden", s!==name);
+  });
+  if(name === "turnout") loadTurnout();
+}
+
+async function requestOtp(isResend){
+  const matric = document.getElementById("matric").value.trim();
+  const fullname = document.getElementById("fullname").value.trim();
+  const email = document.getElementById("email").value.trim();
+  const faculty = document.getElementById("faculty").value;
+  const errBox = document.getElementById("login-error");
+  const otpErrBox = document.getElementById("otp-error");
+  const btn = document.getElementById("btn-verify");
+  errBox.innerHTML = "";
+  if(otpErrBox) otpErrBox.innerHTML = "";
+
+  if(!matric || !fullname || !email || !faculty){
+    errBox.innerHTML = '<div class="error-box">Please enter your matriculation number, full name, email, and select your faculty.</div>';
+    return;
+  }
+
+  btn.disabled = true;
+  btn.textContent = isResend ? "Resending..." : "Sending code...";
+
+  try {
+    const res = await fetch(`${API}/request-otp`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ matric, fullName: fullname, faculty, email }),
+    });
+    const data = await res.json();
+
+    if(!data.ok){
+      const target = isResend ? otpErrBox : errBox;
+      if(data.error === "already_voted"){
+        target.innerHTML = '<div class="error-box">This matriculation number has already voted in this election. Each student may only vote once.</div>';
+      } else if(data.error === "not_on_roll"){
+        target.innerHTML = '<div class="error-box">This matriculation number was not found on the registered voter roll. Contact the electoral committee if you believe this is an error.</div>';
+      } else if(data.error === "invalid_email"){
+        target.innerHTML = '<div class="error-box">Please enter a valid email address.</div>';
+      } else if(data.error === "poll_not_open"){
+        target.innerHTML = '<div class="error-box">Polls have not opened yet. Please check back once voting begins.</div>';
+      } else if(data.error === "poll_closed"){
+        target.innerHTML = '<div class="error-box">Polls have closed. Voting is no longer accepted.</div>';
+      } else if(data.error === "too_soon" || data.error === "rate_limited"){
+        const wait = data.retryAfterSeconds ? ` Please try again in about ${Math.ceil(data.retryAfterSeconds/60) > 1 ? Math.ceil(data.retryAfterSeconds/60) + ' minutes' : data.retryAfterSeconds + ' seconds'}.` : " Please wait a moment before trying again.";
+        target.innerHTML = `<div class="error-box">Too many code requests for this matriculation number.${wait}</div>`;
+      } else {
+        target.innerHTML = '<div class="error-box">Please check your details and try again.</div>';
+      }
+      return;
+    }
+
+    voter = { matric: matric.toUpperCase(), name: fullname, faculty: faculty, email: email };
+
+    const subEl = document.getElementById("otp-sub");
+    if(data.emailSent){
+      subEl.textContent = `A 6-digit code has been sent to ${email}. It expires in 10 minutes.`;
+    } else if(data.devCode){
+      // Dev-mode fallback: no email provider configured yet.
+      subEl.textContent = `Email delivery isn't configured yet, so here's your code for testing: ${data.devCode} (expires in 10 minutes).`;
+    } else {
+      subEl.textContent = `A 6-digit code has been sent to ${email}. It expires in 10 minutes.`;
+    }
+
+    document.getElementById("otp-code").value = "";
+    showScreen("otp");
+  } catch(e){
+    (isResend ? otpErrBox : errBox).innerHTML = '<div class="error-box">Could not reach the server. Check your connection and try again.</div>';
+  } finally {
+    btn.disabled = false;
+    btn.textContent = "Send verification code";
+  }
+}
+
+async function verifyOtp(){
+  const code = document.getElementById("otp-code").value.trim();
+  const errBox = document.getElementById("otp-error");
+  const btn = document.getElementById("btn-otp-verify");
+  errBox.innerHTML = "";
+
+  if(!code){
+    errBox.innerHTML = '<div class="error-box">Please enter the 6-digit code.</div>';
+    return;
+  }
+
+  btn.disabled = true;
+  btn.textContent = "Verifying...";
+
+  try {
+    const res = await fetch(`${API}/verify-otp`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ matric: voter.matric, code }),
+    });
+    const data = await res.json();
+
+    if(!data.ok){
+      if(data.error === "invalid_code"){
+        errBox.innerHTML = '<div class="error-box">That code is incorrect. Please try again.</div>';
+      } else if(data.error === "code_expired"){
+        errBox.innerHTML = '<div class="error-box">That code has expired. Tap "Resend" below to get a new one.</div>';
+      } else if(data.error === "too_many_attempts"){
+        errBox.innerHTML = '<div class="error-box">Too many incorrect attempts. Tap "Resend" below to get a new code.</div>';
+      } else if(data.error === "no_code_requested"){
+        errBox.innerHTML = '<div class="error-box">No active code found. Tap "Resend" below to get a new one.</div>';
+      } else if(data.error === "poll_closed"){
+        errBox.innerHTML = '<div class="error-box">Polls have closed while you were verifying. Voting is no longer accepted.</div>';
+      } else {
+        errBox.innerHTML = '<div class="error-box">Something went wrong. Please try again.</div>';
+      }
+      return;
+    }
+
+    if(POSITIONS.length === 0) await loadBallot();
+    if(POSITIONS.length === 0){
+      errBox.innerHTML = '<div class="error-box">The ballot is not available right now. Please try again shortly.</div>';
+      return;
+    }
+
+    currentPos = 0;
+    selections = {};
+    renderPosition();
+    showScreen("ballot");
+  } catch(e){
+    errBox.innerHTML = '<div class="error-box">Could not reach the server. Check your connection and try again.</div>';
+  } finally {
+    btn.disabled = false;
+    btn.textContent = "Verify and continue";
+  }
+}
+
+function renderPosition(){
+  const pos = POSITIONS[currentPos];
+  const track = document.getElementById("progress-track");
+  track.innerHTML = POSITIONS.map((p,i)=>{
+    let cls = "progress-seg";
+    if(i < currentPos) cls += " done";
+    if(i === currentPos) cls += " active";
+    return `<div class="${cls}"></div>`;
+  }).join("");
+
+  const container = document.getElementById("ballot-position");
+  container.innerHTML = `
+    <p style="font-size:12px;color:var(--ink-soft);margin:0 0 6px;">Position ${currentPos+1} of ${POSITIONS.length}</p>
+    <h2 class="position-title">${pos.title}</h2>
+    <p class="position-sub">${pos.sub}</p>
+    <div>
+      ${pos.candidates.map(c => `
+        <div class="ballot-line" onclick="selectCandidate('${pos.id}','${c.id}')">
+          <div class="oval ${selections[pos.id]===c.id ? 'checked':''}" id="oval-${c.id}"></div>
+          <div>
+            <div class="cand-name">${c.name}</div>
+            <div class="cand-tag">${c.tag}</div>
+          </div>
+        </div>
+      `).join("")}
+    </div>
+  `;
+
+  document.getElementById("btn-back").style.visibility = currentPos===0 ? "hidden" : "visible";
+  document.getElementById("btn-next").textContent = currentPos === POSITIONS.length-1 ? "Review ballot" : "Continue";
+  document.getElementById("btn-next").disabled = !selections[pos.id];
+}
+
+function selectCandidate(posId, candId){
+  selections[posId] = candId;
+  renderPosition();
+}
+
+function nextPosition(){
+  const pos = POSITIONS[currentPos];
+  if(!selections[pos.id]) return;
+  if(currentPos < POSITIONS.length - 1){
+    currentPos++;
+    renderPosition();
+  } else {
+    renderReview();
+    showScreen("review");
+  }
+}
+
+function prevPosition(){
+  if(currentPos > 0){
+    currentPos--;
+    renderPosition();
+  }
+}
+
+function renderReview(){
+  const list = document.getElementById("review-list");
+  list.innerHTML = POSITIONS.map(pos=>{
+    const cand = pos.candidates.find(c=>c.id===selections[pos.id]);
+    return `
+      <div style="display:flex;justify-content:space-between;align-items:center;padding:12px 0;border-bottom:1px solid var(--line);">
+        <div>
+          <div style="font-size:12px;color:var(--ink-soft);">${pos.title}</div>
+          <div class="cand-name" style="font-size:15px;">${cand ? cand.name : "—"}</div>
+        </div>
+      </div>
+    `;
+  }).join("");
+}
+
+async function submitVote(){
+  const btn = event.target;
+  btn.disabled = true;
+  btn.textContent = "Recording vote...";
+
+  try {
+    const res = await fetch(`${API}/submit-vote`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ matric: voter.matric, selections }),
+    });
+    const data = await res.json();
+
+    if(!data.ok){
+      if(data.error === "already_voted"){
+        alert("This matriculation number has already voted. Your ballot was not recorded twice.");
+        showScreen("login");
+        resetForm();
+      } else if(data.error === "not_verified" || data.error === "verification_expired"){
+        alert("Your verification has expired. Please verify your email again to continue.");
+        showScreen("login");
+        resetForm();
+      } else if(data.error === "poll_closed"){
+        alert("Polls have closed. Your vote was not recorded.");
+        showScreen("login");
+        resetForm();
+      } else {
+        alert("Something went wrong recording your vote. Please try again.");
+        btn.disabled = false;
+        btn.textContent = "Cast my vote";
+      }
+      return;
+    }
+
+    showScreen("done");
+  } catch(e){
+    btn.disabled = false;
+    btn.textContent = "Cast my vote";
+    alert("Could not reach the server. Check your connection and try again.");
+  }
+}
+
+async function loadTurnout(){
+  const countEl = document.getElementById("turnout-count");
+  const barEl = document.getElementById("turnout-bar");
+  const subEl = document.getElementById("turnout-sub");
+  const resultsBlock = document.getElementById("results-block");
+  const resultsList = document.getElementById("results-list");
+
+  try {
+    const res = await fetch(`${API}/get-turnout`);
+    const data = await res.json();
+    countEl.textContent = data.turnout;
+    const pct = data.totalRoll ? Math.min(100, Math.round((data.turnout / data.totalRoll) * 100)) : 0;
+    barEl.style.width = pct + "%";
+    subEl.textContent = `${pct}% of the registered voter roll (${data.totalRoll}) has voted.`;
+  } catch(e){
+    subEl.textContent = "Could not load turnout right now.";
+  }
+
+  try {
+    const res = await fetch(`${API}/get-results`);
+    const data = await res.json();
+
+    if(!data.visible){
+      resultsBlock.classList.add("hidden");
+      if(data.pollCloseAt){
+        const closeDate = new Date(data.pollCloseAt);
+        subEl.textContent += ` Results will be available once polls close, at ${closeDate.toLocaleString()}.`;
+      }
+      return;
+    }
+
+    resultsBlock.classList.remove("hidden");
+    let html = "";
+    (data.results || []).forEach(pos=>{
+      const max = Math.max(0, ...pos.candidates.map(c=>c.votes));
+      const totalVotes = pos.candidates.reduce((a,b)=>a+b.votes,0);
+      html += `<div style="margin-bottom:18px;">
+        <div style="font-size:13.5px;font-weight:600;margin-bottom:8px;">${pos.title}</div>
+        ${pos.candidates.map(c=>{
+          const pctC = totalVotes ? Math.round((c.votes/totalVotes)*100) : 0;
+          const isWinner = c.votes === max && max > 0;
+          return `
+            <div style="margin-bottom:8px;">
+              <div class="stat-row">
+                <span style="font-size:13px;">${c.name}${isWinner ? ' <span style="color:var(--gold);">●</span>' : ''}</span>
+                <span class="stat-num" style="font-size:13px;">${c.votes} vote${c.votes===1?'':'s'}</span>
+              </div>
+              <div class="bar-track"><div class="bar-fill ${isWinner?'winner':''}" style="width:${pctC}%;"></div></div>
+            </div>
+          `;
+        }).join("")}
+      </div>`;
+    });
+    resultsList.innerHTML = html;
+  } catch(e){
+    resultsBlock.classList.add("hidden");
+  }
+}
+
+function resetForm(){
+  document.getElementById("matric").value = "";
+  document.getElementById("fullname").value = "";
+  document.getElementById("email").value = "";
+  document.getElementById("faculty").selectedIndex = 0;
+  document.getElementById("login-error").innerHTML = "";
+  const otpCode = document.getElementById("otp-code");
+  if(otpCode) otpCode.value = "";
+  const otpErr = document.getElementById("otp-error");
+  if(otpErr) otpErr.innerHTML = "";
+  voter = null;
+  selections = {};
+  currentPos = 0;
+}
+
+/* ══════════════ ADMIN DASHBOARD ══════════════ */
+
+let adminKey = sessionStorage.getItem("sumas_admin_key") || "";
+
+function toLocalInputValue(iso){
+  if(!iso) return "";
+  const d = new Date(iso);
+  const pad = n => String(n).padStart(2,"0");
+  return `${d.getFullYear()}-${pad(d.getMonth()+1)}-${pad(d.getDate())}T${pad(d.getHours())}:${pad(d.getMinutes())}`;
+}
+
+async function callAdmin(fn, payload){
+  const res = await fetch(`${API}/${fn}`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json", "x-admin-key": adminKey },
+    body: JSON.stringify(payload || {}),
+  });
+  const data = await res.json().catch(()=>({ ok:false, error:"bad_response" }));
+  return { status: res.status, data };
+}
+
+async function unlock(){
+  const key = document.getElementById("admin-key").value.trim();
+  const errBox = document.getElementById("unlock-error");
+  errBox.innerHTML = "";
+  if(!key){
+    errBox.innerHTML = '<div class="error-box">Enter the admin key.</div>';
+    return;
+  }
+  adminKey = key;
+  const { status, data } = await callAdmin("admin-overview");
+  if(status === 401){
+    errBox.innerHTML = '<div class="error-box">That key was not accepted. Check ADMIN_KEY in Netlify and try again.</div>';
+    adminKey = "";
+    return;
+  }
+  if(!data.ok){
+    errBox.innerHTML = '<div class="error-box">Could not reach the server. Try again shortly.</div>';
+    return;
+  }
+  sessionStorage.setItem("sumas_admin_key", adminKey);
+  document.getElementById("screen-unlock").classList.add("hidden");
+  document.getElementById("screen-dashboard").classList.remove("hidden");
+  renderOverview(data);
+}
+
+function renderOverview(data){
+  const pill = document.getElementById("poll-pill");
+  const now = new Date(data.now);
+  const s = data.settings;
+
+  if(s.pollCloseAt && now >= new Date(s.pollCloseAt)){
+    pill.textContent = "Closed"; pill.className = "pill closed";
+  } else if(s.pollOpenAt && now < new Date(s.pollOpenAt)){
+    pill.textContent = "Scheduled"; pill.className = "pill scheduled";
+  } else {
+    pill.textContent = "Open"; pill.className = "pill open";
+  }
+
+  document.getElementById("admin-turnout-count").textContent = data.turnout;
+  const pct = data.totalRoll ? Math.min(100, Math.round((data.turnout / data.totalRoll) * 100)) : 0;
+  document.getElementById("admin-turnout-bar").style.width = pct + "%";
+  document.getElementById("admin-turnout-sub").textContent =
+    `${pct}% of ${data.rollLoaded ? "the loaded voter roll" : "the fallback roll size"} (${data.totalRoll}) has voted.`;
+
+  document.getElementById("poll-open").value = toLocalInputValue(s.pollOpenAt);
+  document.getElementById("poll-close").value = toLocalInputValue(s.pollCloseAt);
+  document.getElementById("results-public-toggle").checked = s.resultsPublic;
+
+  const container = document.getElementById("admin-results");
+  container.innerHTML = (data.results || []).map(pos=>{
+    const max = Math.max(0, ...pos.candidates.map(c=>c.votes));
+    const total = pos.candidates.reduce((a,b)=>a+b.votes,0);
+    return `<div class="position-block">
+      <div style="font-size:13.5px;font-weight:600;margin-bottom:8px;">${pos.title}</div>
+      ${pos.candidates.map(c=>{
+        const pctC = total ? Math.round((c.votes/total)*100) : 0;
+        const isWinner = c.votes === max && max > 0;
+        return `<div style="margin-bottom:8px;">
+          <div class="stat-row">
+            <span style="font-size:13px;">${c.name}${isWinner ? ' <span style="color:var(--gold);">●</span>' : ''}</span>
+            <span class="stat-num" style="font-size:13px;">${c.votes} vote${c.votes===1?'':'s'}</span>
+          </div>
+          <div class="bar-track"><div class="bar-fill ${isWinner?'winner':''}" style="width:${pctC}%;"></div></div>
+        </div>`;
+      }).join("")}
+    </div>`;
+  }).join("");
+
+  renderBallotEditor(data.results || []);
+}
+
+function escapeHtml(str){
+  return String(str).replace(/[&<>"']/g, ch => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[ch]));
+}
+
+function renderBallotEditor(results){
+  const list = document.getElementById("ballot-list");
+  const sorted = [...results].sort((a,b)=> (a.sortOrder||0) - (b.sortOrder||0));
+  list.innerHTML = sorted.map(pos => `
+    <div class="ballot-pos" data-pos-id="${escapeHtml(pos.id)}">
+      <div class="ballot-pos-head">
+        <span class="title">${escapeHtml(pos.title)}</span>
+        <span>
+          <button class="icon-btn" onclick="editPosition('${pos.id}','${escapeHtml(pos.title).replace(/'/g,"\\'")}',${pos.sortOrder||0})">Edit</button>
+          <button class="icon-btn danger" onclick="deletePosition('${pos.id}','${escapeHtml(pos.title).replace(/'/g,"\\'")}')">Delete</button>
+        </span>
+      </div>
+      ${pos.candidates.map(c => `
+        <div class="ballot-cand-row">
+          <div>
+            <div class="ballot-cand-name">${escapeHtml(c.name)}</div>
+            ${c.tag ? `<div class="ballot-cand-tag">${escapeHtml(c.tag)}</div>` : ""}
+          </div>
+          <span>
+            <button class="icon-btn" onclick="editCandidate('${c.id}','${escapeHtml(c.name).replace(/'/g,"\\'")}','${escapeHtml(c.tag||"").replace(/'/g,"\\'")}')">Edit</button>
+            <button class="icon-btn danger" onclick="deleteCandidate('${c.id}','${escapeHtml(c.name).replace(/'/g,"\\'")}')">Delete</button>
+          </span>
+        </div>
+      `).join("")}
+      <div class="add-cand-row">
+        <input type="text" id="new-cand-name-${pos.id}" placeholder="Candidate name">
+        <input type="text" id="new-cand-tag-${pos.id}" placeholder="Tag (optional)" style="max-width:150px;">
+        <button class="btn btn-ghost" style="padding:10px 14px;" onclick="addCandidate('${pos.id}')">Add</button>
+      </div>
+    </div>
+  `).join("") || '<p class="muted">No positions yet — add one below.</p>';
+}
+
+async function ballotAction(payload){
+  const errBox = document.getElementById("ballot-error");
+  const okBox = document.getElementById("ballot-ok");
+  errBox.innerHTML = ""; okBox.innerHTML = "";
+  const { status, data } = await callAdmin("admin-ballot", payload);
+  if(status === 401){
+    sessionStorage.removeItem("sumas_admin_key");
+    location.reload();
+    return false;
+  }
+  if(!data.ok){
+    const msg = data.error === "has_votes"
+      ? "Can't remove this — it already has recorded votes."
+      : "Something went wrong. Check the details and try again.";
+    errBox.innerHTML = `<div class="error-box">${msg}</div>`;
+    return false;
+  }
+  okBox.innerHTML = '<div class="ok-box">Saved.</div>';
+  await refreshAll();
+  return true;
+}
+
+async function addPosition(){
+  const title = document.getElementById("new-pos-title").value.trim();
+  const sortOrder = document.getElementById("new-pos-order").value.trim();
+  if(!title){
+    document.getElementById("ballot-error").innerHTML = '<div class="error-box">Enter a position title.</div>';
+    return;
+  }
+  const ok = await ballotAction({ action: "addPosition", title, sortOrder: sortOrder || undefined });
+  if(ok){
+    document.getElementById("new-pos-title").value = "";
+    document.getElementById("new-pos-order").value = "";
+  }
+}
+
+async function editPosition(id, currentTitle, currentSortOrder){
+  const title = prompt("Position title:", currentTitle);
+  if(title === null) return;
+  const sortOrder = prompt("Sort order (controls ballot order):", currentSortOrder);
+  if(sortOrder === null) return;
+  await ballotAction({ action: "updatePosition", id, title, sortOrder });
+}
+
+async function deletePosition(id, title){
+  if(!confirm(`Remove "${title}" and all its candidates? This can't be undone, and is blocked automatically if any votes have already been cast for it.`)) return;
+  await ballotAction({ action: "deletePosition", id });
+}
+
+async function addCandidate(positionId){
+  const name = document.getElementById(`new-cand-name-${positionId}`).value.trim();
+  const tag = document.getElementById(`new-cand-tag-${positionId}`).value.trim();
+  if(!name){
+    document.getElementById("ballot-error").innerHTML = '<div class="error-box">Enter a candidate name.</div>';
+    return;
+  }
+  await ballotAction({ action: "addCandidate", positionId, name, tag: tag || null });
+}
+
+async function editCandidate(id, currentName, currentTag){
+  const name = prompt("Candidate name:", currentName);
+  if(name === null) return;
+  const tag = prompt("Tag / affiliation (optional):", currentTag);
+  if(tag === null) return;
+  await ballotAction({ action: "updateCandidate", id, name, tag: tag || null });
+}
+
+async function deleteCandidate(id, name){
+  if(!confirm(`Remove "${name}"? This can't be undone, and is blocked automatically if this candidate already has votes.`)) return;
+  await ballotAction({ action: "deleteCandidate", id });
+}
+
+async function refreshAll(){
+  const { status, data } = await callAdmin("admin-overview");
+  if(status === 401){
+    sessionStorage.removeItem("sumas_admin_key");
+    location.reload();
+    return;
+  }
+  if(data.ok) renderOverview(data);
+}
+
+async function saveSettings(){
+  const btn = document.getElementById("btn-save");
+  const errBox = document.getElementById("dash-error");
+  const okBox = document.getElementById("dash-ok");
+  errBox.innerHTML = ""; okBox.innerHTML = "";
+  btn.disabled = true;
+  btn.textContent = "Saving...";
+
+  const openVal = document.getElementById("poll-open").value;
+  const closeVal = document.getElementById("poll-close").value;
+
+  const payload = {
+    resultsPublic: document.getElementById("results-public-toggle").checked,
+    pollOpenAt: openVal ? new Date(openVal).toISOString() : null,
+    pollCloseAt: closeVal ? new Date(closeVal).toISOString() : null,
+  };
+
+  try {
+    const { status, data } = await callAdmin("admin-settings", payload);
+    if(status === 401){
+      sessionStorage.removeItem("sumas_admin_key");
+      location.reload();
+      return;
+    }
+    if(!data.ok){
+      errBox.innerHTML = '<div class="error-box">Could not save changes. Check the values and try again.</div>';
+      return;
+    }
+    okBox.innerHTML = '<div class="ok-box">Saved.</div>';
+    await refreshAll();
+  } catch(e){
+    errBox.innerHTML = '<div class="error-box">Could not reach the server. Check your connection and try again.</div>';
+  } finally {
+    btn.disabled = false;
+    btn.textContent = "Save changes";
+  }
+}
+
+/* ══════════════ ROUTING (voter site vs #admin dashboard) ══════════════ */
+
+function isAdminRoute(){
+  return location.hash.indexOf("#admin") === 0;
+}
+
+async function enterAdminMode(){
+  document.getElementById("voter-app").classList.add("hidden");
+  document.getElementById("admin-app").classList.remove("hidden");
+  const splash = document.getElementById("splash");
+  if(splash) splash.remove();
+
+  if(adminKey){
+    const { status, data } = await callAdmin("admin-overview");
+    if(status !== 401 && data.ok){
+      document.getElementById("screen-unlock").classList.add("hidden");
+      document.getElementById("screen-dashboard").classList.remove("hidden");
+      renderOverview(data);
+      return;
+    }
+    sessionStorage.removeItem("sumas_admin_key");
+    adminKey = "";
+  }
+}
+
+if(isAdminRoute()){
+  enterAdminMode();
+} else {
+  loadBallot();
+  // Remove the welcome splash from the DOM once it's finished fading,
+  // so it doesn't sit invisible on top of the page blocking clicks.
+  setTimeout(function(){
+    const splash = document.getElementById("splash");
+    if(splash) splash.remove();
+  }, 3100);
+}
+
+window.addEventListener("hashchange", function(){
+  if(isAdminRoute()){
+    enterAdminMode();
+  } else {
+    location.reload();
+  }
+});
+</script>
+</body>
+</html>

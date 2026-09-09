@@ -1,0 +1,35 @@
+project_id = "sumas-evote"
+
+# Every edge function normally requires a Supabase Authorization
+# (JWT) header on incoming requests. These six functions are public
+# — voters call them straight from the browser with no Supabase auth
+# session, matching how they worked as open Netlify Functions — so
+# JWT verification is switched off for each of them below.
+[functions.get-ballot]
+verify_jwt = false
+
+[functions.get-results]
+verify_jwt = false
+
+[functions.get-turnout]
+verify_jwt = false
+
+[functions.request-otp]
+verify_jwt = false
+
+[functions.submit-vote]
+verify_jwt = false
+
+[functions.verify-otp]
+verify_jwt = false
+
+# Admin functions use their own shared-secret check (x-admin-key vs.
+# the ADMIN_KEY function secret) instead of Supabase JWT auth.
+[functions.admin-overview]
+verify_jwt = false
+
+[functions.admin-ballot]
+verify_jwt = false
+
+[functions.admin-settings]
+verify_jwt = false
